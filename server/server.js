@@ -8,28 +8,21 @@ const publicpath=path.join(__dirname,'/../public');
 const app=express();
 const server=http.createServer(app);
 const io=socketIO(server);
+const {generateMessage}=require('./utils/message');
 
 io.on('connection',(socket)=>{
     console.log('New user Connected');
 
-    socket.emit('NewMessage',{
-        from: "Admin",
-        text: "Welcome to the Chat App",
-        createdAt: new Date()
-    })
-    socket.broadcast.emit('NewMessage',{
-        from: "Admin",
-        text: "New user joined",
-        createdAt: new Date()
-    })
+    socket.emit('NewMessage',generateMessage("Admin","Welcome to the Chat app"))
+    socket.broadcast.emit('NewMessage',generateMessage("Admin","New User Joined"))
 
-    socket.on("createMessage",function (message) {
+    socket.on('createMessage',function (message) {
         console.log("create message :",message)
-        io.emit('NewMessage',{
-            from: message.from,
-            text: message.text,
-            createdAt: new Date()
-        })
+        io.emit('NewMessage',generateMessage(message.from,message.text))
+    })
+    socket.on('creteLocationMessage',function(location){
+        console.log(location)
+        io.emit('NewMessage',generateMessage("User",`${location.latitude},${location.longitude}`))
     })
     socket.on('disconnect',()=>{
         console.log('User disconnected')

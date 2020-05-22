@@ -8,7 +8,7 @@ const publicpath=path.join(__dirname,'/../public');
 const app=express();
 const server=http.createServer(app);
 const io=socketIO(server);
-const {generateMessage}=require('./utils/message');
+const {generateMessage,generateLocationMessage}=require('./utils/message');
 
 io.on('connection',(socket)=>{
     console.log('New user Connected');
@@ -22,7 +22,7 @@ io.on('connection',(socket)=>{
     })
     socket.on('creteLocationMessage',function(location){
         console.log(location)
-        io.emit('NewMessage',generateMessage("User",`${location.latitude},${location.longitude}`))
+        io.emit('NewLocationMessage',generateLocationMessage("User",location.latitude,location.longitude))
     })
     socket.on('disconnect',()=>{
         console.log('User disconnected')

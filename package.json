@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Manish-1301/Chat-app#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "moment": "^2.26.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

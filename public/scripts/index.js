@@ -37,12 +37,8 @@ const createList= function(message){
         message: message.text,
         createdAt:formattedTime
     })
-    shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
     $messages.insertAdjacentHTML('beforeend', html)
-    if (!shouldScroll) {
-        scrollToBottom();
-    }
-
+    autoscroll()
 }
 function addMessage(){
     const text=document.getElementById("message").value;
@@ -57,11 +53,8 @@ function createLocation(message){
         url: message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
-    shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
     $messages.insertAdjacentHTML('beforeend', html)
-    if (!shouldScroll) {
-        scrollToBottom();
-    }
+    autoscroll();
 }
 
 document.getElementById("message").addEventListener( 'keypress',function (event){

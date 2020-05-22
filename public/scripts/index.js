@@ -10,22 +10,6 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
-const autoscroll = () => {
-    const $newMessage = $messages.lastElementChild
-
-    const newMessageStyles = getComputedStyle($newMessage)
-    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
-    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
-
-    const visibleHeight = $messages.offsetHeight
-
-    const containerHeight = $messages.scrollHeight
-    const scrollOffset = $messages.scrollTop + visibleHeight
-
-    if (containerHeight - newMessageHeight <= scrollOffset) {
-        $messages.scrollTop = $messages.scrollHeight
-    }
-}
 function scrollToBottom() {
     messages.scrollTop = messages.scrollHeight;
   }
@@ -37,8 +21,12 @@ const createList= function(message){
         message: message.text,
         createdAt:formattedTime
     })
+    shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
     $messages.insertAdjacentHTML('beforeend', html)
-    autoscroll()
+    if (!shouldScroll) {
+        scrollToBottom();
+    }
+
 }
 function addMessage(){
     const text=document.getElementById("message").value;
@@ -53,8 +41,12 @@ function createLocation(message){
         url: message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
+    shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
     $messages.insertAdjacentHTML('beforeend', html)
-    autoscroll();
+    if (!shouldScroll) {
+        scrollToBottom();
+    }
+
 }
 
 document.getElementById("message").addEventListener( 'keypress',function (event){

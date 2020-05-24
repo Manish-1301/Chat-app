@@ -10,13 +10,10 @@ const publicpath=path.join(__dirname,'/../public');
 const app=express();
 const server=http.createServer(app);
 const io=socketIO(server);
-
 io.on('connection',(socket)=>{
-    console.log(`user Connected`);
 
     socket.on('join',(options,callback)=>{
         const {user,error}=addUser(socket.id,options.name,options.room)
-        console.log(user,error)
         if(error){
             return callback(error)
         }
@@ -46,12 +43,13 @@ io.on('connection',(socket)=>{
     })
     socket.on('disconnect',()=>{
         const user=removeUser(socket.id);
-        io.to(user.room).emit('roomData',{
-            room: user.room,
-            users:getUsersInRoom(user.room)
-        })
-        socket.to(user.room).broadcast.emit('NewMessage',generateMessage("Admin",`${user.name} left`))
-        console.log('User disconnected')
+        if(user){
+            io.to(user.room).emit('roomData',{
+                room: user.room,
+                users:getUsersInRoom(user.room)
+            })
+            socket.to(user.room).broadcast.emit('NewMessage',generateMessage("Admin",`${user.name} left`))
+        }
     })
 
 })

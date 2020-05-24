@@ -59,13 +59,16 @@ const createList= (message)=>{
 }
 const addMessage=()=>{
     const text=$input.value;
-    socket.emit('createMessage',{from: "User",text: text},()=>{
+    if(!text.trim())
         $input.value='';
-    })
+    else{
+        socket.emit('createMessage',{from: "User",text: text},()=>{
+            $input.value='';
+        })
+    }
 }
 //Create new Location message
 const createLocation=(message)=>{
-    console.log(message)
     const html = Mustache.render(locationMessageTemplate, {
         from: message.from,
         url: message.text,
@@ -85,7 +88,6 @@ $sendLocationButton.addEventListener('click',()=> {
         return alert('Geolocation not supported in your browser');
     $sendLocationButton.setAttribute("disabled","disabled")
     navigator.geolocation.getCurrentPosition((location)=>{
-        console.log(location)
         socket.emit('creteLocationMessage',{latitude: location.coords.latitude,longitude: location.coords.longitude})
         $sendLocationButton.removeAttribute("disabled")
     },()=> {
@@ -98,7 +100,6 @@ $sendLocationButton.addEventListener('click',()=> {
 submit.addEventListener('click',addMessage)
 
 socket.on('connect',()=> {
-    console.log('Connected to server')
 
     socket.emit('join',{name,room},(err)=>{
         if(err){
@@ -110,7 +111,7 @@ socket.on('connect',()=> {
     })
 })
 socket.on('roomData',({room,users})=>{
-    console.log(users)
+    console.log(users);
     const html = Mustache.render(sidebarTemplate, {
         room,
         users
@@ -119,11 +120,9 @@ socket.on('roomData',({room,users})=>{
 })
 
 socket.on('NewMessage', (message)=> {
-    console.log('New message :', message );
     createList(message);
 })
 socket.on('NewLocationMessage',(message)=>{
-    console.log('New message :', message );
     createLocation(message);
 })
 socket.on('disconnect',()=>{

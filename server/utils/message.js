@@ -11,7 +11,7 @@ const generateMessage = (from,text)=>{
 const generateLocationMessage=(from,latitude,longitude)=>{
     return {
         from,
-        text:`https://www.google.com/maps?=${latitude},${longitude}`,
+        text:`https://google.com/maps?q=${latitude},${longitude}`,
         createdAt: moment().valueOf()
     }
 }
